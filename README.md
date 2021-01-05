@@ -1,0 +1,1 @@
+This is a simple web server demo made with skynet. This project aims to explore the internal of the web server, it will perform functions such as load resources(HTML page, images, js files, etc) to browser from the webserver, send request from the client, read a response from the server, and so on.
