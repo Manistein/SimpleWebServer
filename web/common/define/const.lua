@@ -1,0 +1,11 @@
+local const = {}
+
+const.HTTP_METHODS = {}
+const.HTTP_METHODS.GET = "GET"
+const.HTTP_METHODS.HEAD = "HEAD"
+const.HTTP_METHODS.POST = "POST"
+const.HTTP_METHODS.PUT = "PUT"
+const.HTTP_METHODS.DELETE = "DELETE"
+const.HTTP_METHODS.OPTIONS = "OPTIONS"
+
+return const

@@ -1,0 +1,26 @@
+root = "./"
+
+thread = 8 
+logpath = "."
+harbor = 0
+start = "boot"
+bootstrap = "snlua bootstrap"
+lualoader = root.."../skynet/lualib/loader.lua"
+
+cpath = root.."../skynet/cservice/?.so;"
+        ..root.."../3rd/clib/loggerx/?.so;"
+luaservice = root.."../skynet/service/?.lua;"
+            ..root.."../web/service/?.lua;"
+            ..root.."../web/service/?/main.lua;"
+lua_cpath = root.."../skynet/luaclib/?.so;"
+            ..root.."../3rd/clib/cjson/?.so;"
+            ..root.."../3rd/clib/cryptex/?.so;"
+            ..root.."../3rd/clib/lfs/?.so;"
+lua_path = root.."../skynet/lualib/?.lua;../skynet/lualib/compat10/?.lua;../skynet/lualib/?/init.lua;"
+			..root.."../web/?.lua;"
+            ..root.."../web/service/?.lua;"
+            ..root.."../3rd/lualib/?.lua;"
+            ..root.."../web/service/?/modules/?.lua;"
+
+logger = root .. "../logs" 
+logservice = "loggerx"
