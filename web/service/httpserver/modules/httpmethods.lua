@@ -2,6 +2,7 @@ local skynet = require "skynet"
 local log    = require "common.lib.log"
 local urllib = require "http.url"
 local request= require "httpserver.modules.request"
+local const  = require "common.define.const"
 require "lfs"
 
 local root = "../web/static"
@@ -63,6 +64,33 @@ local function do_request(method_name, params)
 	return func(table.unpack(p, 1, nparams))
 end
 
+local function get_header(path)
+	local extension = path:match("^.+(%..+)$")
+	log.info("path:%s extension:%s", path, extension)
+
+	local header = nil 
+	local content_type = const.extension2content_type[string.lower(extension:sub(2))]
+	if content_type then 
+		header = {}
+		header["Content-Type"] = content_type
+	end 
+
+	return header
+end 
+
+local function process_path(path)
+	if path == "/" then 
+		path = "/index.html"
+	end 
+
+	local extension = path:match("^.+(%..+)$")
+	if not extension then 
+		path = path .. ".html"
+	end 
+
+	return path
+end 
+
 -- the reference of difference between get and post methods in http 
 -- https://javarevisited.blogspot.com/2012/03/get-post-method-in-http-and-https.html#axzz6j1CJBLxh
 function httpmethods.GET(id, path, query)
@@ -76,12 +104,10 @@ function httpmethods.GET(id, path, query)
 
 		return do_request(method_name, q)	
 	else -- get a resource
-		if path == "/" then 
-			path = "/index.html"
-		end 
+		path = process_path(path)
 		local content = staticfiles[path]
 		if content then 
-			return 200, content
+			return 200, content, get_header(path) 
 		else 
 			return 404
 		end
@@ -89,6 +115,13 @@ function httpmethods.GET(id, path, query)
 end
 
 function httpmethods.HEAD(id, path, query)
+	path = process_path(path)
+	local content = staticfiles[path]
+	if not content then 
+		return 404
+	end 
+
+	return 200, nil, get_header(path)
 end 
 
 function httpmethods.POST(id, path, query, body)
@@ -100,13 +133,29 @@ function httpmethods.POST(id, path, query, body)
 	return do_request(method_name, body)
 end
 
+-- TODO
 function httpmethods.PUT(id, path, query, body)
+	return 501
 end
 
+-- TODO
 function httpmethods.DELETE(id, path)
+	return 501
 end
 
 function httpmethods.OPTIONS(id)
+	local header = {}	
+	local func_str = ""
+
+	for k, v in pairs(const.HTTP_METHODS) do 
+		if func_str ~= "" then 
+			func_str = func_str .. ","
+		end 
+		func_str = func_str .. v
+	end
+
+	header["Allow"] = func_str
+	return 200, nil, header
 end
 
 return httpmethods

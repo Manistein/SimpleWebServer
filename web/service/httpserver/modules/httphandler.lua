@@ -50,7 +50,7 @@ function httphandler.read_request(id, addr)
             return
         end 
 
-        local is_ok, code, content = xpcall(function() return func(id, path, query, body) end, traceback) 
+        local is_ok, code, content, header= xpcall(function() return func(id, path, query, body) end, traceback) 
         if not is_ok then 
             -- server internal error
             response(id, 500)
@@ -61,7 +61,7 @@ function httphandler.read_request(id, addr)
         if code ~= 200 then 
             response(id, code)
         else
-            response(id, code, content)
+            response(id, code, content, header)
         end
     end
 end
