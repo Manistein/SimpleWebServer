@@ -10,6 +10,12 @@ local httpmethods  = require "httpserver.modules.httpmethods"
 local httphandler = {}
 
 function httphandler.init()
+    skynet.fork(function()
+        while true do 
+            httpmethods.update(skynet.time())
+            skynet.sleep(100) -- sleep 1 second
+        end 
+    end)
 end 
 
 local function response(id, ...)
@@ -50,18 +56,22 @@ function httphandler.read_request(id, addr)
             return
         end 
 
-        local is_ok, code, content, header= xpcall(function() return func(id, path, query, body) end, traceback) 
+        local is_ok, code, content, r_header= xpcall(function() return func(id, path, query, body, header) end, traceback) 
         if not is_ok then 
             -- server internal error
             response(id, 500)
             return 
         end 
 
-        log.info("code:%d content:%s", code, content)
+        log.info("code:%d", code)
+        if content and type(content) == "string" then 
+            log.info("content len %d", #content)
+        end
+
         if code ~= 200 then 
             response(id, code)
         else
-            response(id, code, content, header)
+            response(id, code, content, r_header)
         end
     end
 end

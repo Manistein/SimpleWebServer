@@ -4,7 +4,7 @@ skynet.start(function()
 	skynet.error("web server is booting...")
 
 	-- create httpserver service
-	skynet.uniqueservice("httpserver", "server", 1, 8080, "httpserver.modules.httphandler")
+	skynet.uniqueservice("httpserver", "server", 8, 8080, "httpserver.modules.httphandler")
 
 	skynet.error("web server boots success!")
 	skynet.exit()

@@ -14,12 +14,12 @@ function start_process() {
 	[ $? -eq 0 ] && echo "进程$3已经存在,禁止重复启动" && return
 	echo "$parentPath/skynet/skynet $1 &> /dev/null &"
 	nohup $parentPath/skynet/skynet $1 &> /dev/null &
-	sleep 1
 }
 
 function stop_process() {
 	echo "killing $1 ..."
-	res=`ps aux | grep "$1" | grep -v tail | grep -v grep | awk '{print $2}'`
+	res=`ps aux | grep "skynet" | grep -v tail | grep -v grep | awk '{print $2}'`
+	echo $res
 	[ "$res" != "" ] && kill $res
 }
 
